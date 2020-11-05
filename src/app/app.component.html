@@ -1,4 +1,71 @@
-<canvas #canvas id="myCanvas" width="600" height="300"></canvas>
-    <button (click)="play()">Play</button>
+<div class="container clearfix">
 
-    <button (click)="login()">Test</button>
+  <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="exampleModalLabel">Add New Table</h3>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="tableForm">
+            <div class="form-group">
+              <label for="table-name" class="col-form-label">Name:</label>
+              <input formControlName="name" type="text" class="form-control" id="table-name">
+            </div>
+            <div class="form-group">
+              <label for="table-shape" class="col-form-label">Shape:</label>
+              <!-- <input formControlName="shape" type="text" class="form-control" id="table-shape"> -->
+              <select formControlName="shape" class="custom-select" id="shape">
+                <option selected>Choose...</option>
+                <option *ngFor="let item of shapeList" value="item.value">{{item.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="table-section" class="col-form-label">Section:</label>
+              <select formControlName="section" class="custom-select" id="section">
+                <option selected>Choose...</option>
+                <option *ngFor="let item of sectionList" value="item.value">{{item.name}}</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" (click)="addTable()" class="btn btn-primary">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="d-flex justify-content-end">
+    <button type="button" class="btn btn-outline-primary my-5 text-right" data-toggle="modal"
+      data-target="#addTableModal" data-whatever="@addTable">
+      Add table</button>
+  </div>
+
+  <div class="row">
+    <div class="col-3">
+      <div class="list-group">
+        <a href="#" *ngFor="let table of tables; let i=index"
+          class="list-group-item list-group-item-action">{{table.name}}</a>
+      </div>
+    </div>
+    <div class="col">
+      <div class="canvas">
+        <div class="example-boundary">
+          <div *ngFor="let table of tables; let i=index">
+            <div class="example-box" cdkDragBoundary=".example-boundary" cdkDrag
+              [cdkDragFreeDragPosition]="table.position" (cdkDragEnded)="onDragEnded($event)">
+              {{table.name}}
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
