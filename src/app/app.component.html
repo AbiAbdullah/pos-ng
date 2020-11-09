@@ -6,7 +6,8 @@
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title" id="exampleModalLabel">Add New Table</h3>
-          <button type="button" (click)="closeTable()" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" #closebuttonOfTableModal (click)="closeTable()" class="close" data-dismiss="modal"
+            aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -33,8 +34,8 @@
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" (click)="closeTable()" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" (click)="addTable()" class="btn btn-primary">Save</button>
+          <!-- <button type="button" (click)="closeTable()" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+          <button type="submit" (click)="addTable()" class="btn btn-primary btn-block">Save</button>
         </div>
       </div>
     </div>

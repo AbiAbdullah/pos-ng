@@ -1,13 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Square } from './model/square';
 import { FormBuilder, Validators } from '@angular/forms';
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent implements OnInit, OnDestroy {
+
+  @ViewChild('closebuttonOfTableModal') closebuttonOfTableModal;
   title = 'pos-floor-plan';
   requestId;
   interval;
@@ -44,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.tables.push(this.tableForm.value);
       }
       this.resetForm();
+      this.closebuttonOfTableModal.nativeElement.click();
     }
 
   }
