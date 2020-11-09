@@ -1,7 +1,6 @@
-import { Component, ElementRef, NgZone, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Square } from './model/square';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-root',
@@ -16,12 +15,17 @@ export class AppComponent implements OnInit, OnDestroy {
   squareLeft = 0;
   tableId = 0;
   tables = [];
+  selectedTableIndex = null;
   shapeList = [{ name: 'Rectangle', value: 'rectangle' }, { name: 'Circle', value: 'circle' }];
   sectionList = [{ name: 'Sec1', value: 'sec1' }, { name: 'Sec2', value: 'sec2' }];
   tableForm = this.fb.group({
     name: ['', Validators.required],
     shape: ['', Validators.required],
-    section: ['', Validators.required]
+    section: ['', Validators.required],
+    position: this.fb.group({
+      x: [0.5],
+      y: [0.5]
+    })
   });
   constructor(private fb: FormBuilder) { }
 
@@ -33,20 +37,25 @@ export class AppComponent implements OnInit, OnDestroy {
 
 
   addTable() {
-    console.log("akdakdkh")
-    // this.tableId++;
-    // const position = { x: 119, y: 63 };
-    // this.tables.push({ id: this.tableId, position });
     if (this.tableForm.valid) {
-      this.tables.push(this.tableForm.value);
+      if (this.selectedTableIndex !== null) {
+        this.tables[this.selectedTableIndex] = this.tableForm.value;
+      } else {
+        this.tables.push(this.tableForm.value);
+      }
+      this.resetForm();
     }
 
   }
-  onDragEnded(event) {
-    let element = event.source.getRootElement();
-    let boundingClientRect = element.getBoundingClientRect();
-    let parentPosition = this.getPosition(element);
-    console.log('x: ' + (boundingClientRect.x - parentPosition.left), 'y: ' + (boundingClientRect.y - parentPosition.top));
+  onDragEnded(event, table) {
+    const element = event.source.getRootElement();
+    const boundingClientRect = element.getBoundingClientRect();
+    const parentPosition = this.getPosition(element);
+    const position = {
+      x: (boundingClientRect.x - parentPosition.left),
+      y: (boundingClientRect.y - parentPosition.top)
+    };
+    table.position = position;
   }
 
   getPosition(el) {
@@ -59,5 +68,16 @@ export class AppComponent implements OnInit, OnDestroy {
     }
     return { top: y, left: x };
   }
-
+  setTable(table, indexNo) {
+    this.selectedTableIndex = indexNo;
+    this.tableForm.setValue(table);
+  }
+  closeTable() {
+    this.resetForm();
+  }
+  resetForm() {
+    this.selectedTableIndex = null;
+    this.tableForm.reset();
+    this.tableForm.get('position').setValue({ x: 0.5, y: 0.5 });
+  }
 }

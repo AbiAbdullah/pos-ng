@@ -6,7 +6,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <h3 class="modal-title" id="exampleModalLabel">Add New Table</h3>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <button type="button" (click)="closeTable()" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
@@ -18,23 +18,22 @@
             </div>
             <div class="form-group">
               <label for="table-shape" class="col-form-label">Shape:</label>
-              <!-- <input formControlName="shape" type="text" class="form-control" id="table-shape"> -->
               <select formControlName="shape" class="custom-select" id="shape">
                 <option selected>Choose...</option>
-                <option *ngFor="let item of shapeList" value="item.value">{{item.name}}</option>
+                <option *ngFor="let item of shapeList" [value]="item.value">{{item.name}}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="table-section" class="col-form-label">Section:</label>
               <select formControlName="section" class="custom-select" id="section">
                 <option selected>Choose...</option>
-                <option *ngFor="let item of sectionList" value="item.value">{{item.name}}</option>
+                <option *ngFor="let item of sectionList" [value]="item.value">{{item.name}}</option>
               </select>
             </div>
           </form>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" (click)="closeTable()" class="btn btn-secondary" data-dismiss="modal">Close</button>
           <button type="submit" (click)="addTable()" class="btn btn-primary">Save</button>
         </div>
       </div>
@@ -49,22 +48,21 @@
   <div class="row">
     <div class="col-3">
       <div class="list-group">
-        <a href="#" *ngFor="let table of tables; let i=index"
-          class="list-group-item list-group-item-action">{{table.name}}</a>
+        <a data-toggle="modal" data-target="#addTableModal" data-whatever="@addTable" (click)="setTable(table, i)"
+          *ngFor="let table of tables; let i=index" class="list-group-item list-group-item-action">Table -
+          {{table.name}}</a>
       </div>
     </div>
     <div class="col">
       <div class="canvas">
-        <div class="example-boundary">
-          <div *ngFor="let table of tables; let i=index">
-            <div class="example-box" cdkDragBoundary=".example-boundary" cdkDrag
-              [cdkDragFreeDragPosition]="table.position" (cdkDragEnded)="onDragEnded($event)">
-              {{table.name}}
-            </div>
-
+        <div class="drag-boundary">
+          <div class="drag-box" *ngFor="let table of tables; let i=index"
+            [ngClass]="{'circle-table': table.shape === 'circle', 'rect-table': table.shape === 'rectangle'}" cdkDrag
+            cdkDragBoundary=".drag-boundary" [cdkDragFreeDragPosition]="table.position"
+            (cdkDragEnded)="onDragEnded($event, table)">
+            {{table.name}}
           </div>
         </div>
-
       </div>
     </div>
   </div>
