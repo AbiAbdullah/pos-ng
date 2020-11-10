@@ -34,18 +34,21 @@
           </form>
         </div>
         <div class="modal-footer">
-          <!-- <button type="button" (click)="closeTable()" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
           <button type="submit" (click)="addTable()" class="btn btn-primary btn-block">Save</button>
         </div>
       </div>
     </div>
   </div>
-  <div class="d-flex justify-content-end">
+  <div class="d-flex align-items-center justify-content-end">
     <button type="button" class="btn btn-outline-primary my-5 text-right" data-toggle="modal"
       data-target="#addTableModal" data-whatever="@addTable">
       Add table</button>
+    <div class="custom-file ml-3" style="max-width: 350px;">
+      <input type="file" class="custom-file-input" accept='image/*' (change)="onSelectFile($event)" id="
+      inputGroupFile">
+      <label class="custom-file-label" for="customFile">Choose file</label>
+    </div>
   </div>
-
   <div class="row">
     <div class="col-3">
       <div class="list-group">
@@ -55,7 +58,8 @@
       </div>
     </div>
     <div class="col">
-      <div class="canvas">
+      <div style="background-size: 100% 100%;"
+        [ngStyle]="{'background': 'url(' + bgImageUrl + ') no-repeat 0 0 / cover'}">
         <div class="drag-boundary">
           <div class="drag-box" *ngFor="let table of tables; let i=index"
             [ngClass]="{'circle-table': table.shape === 'circle', 'rect-table': table.shape === 'rectangle'}" cdkDrag

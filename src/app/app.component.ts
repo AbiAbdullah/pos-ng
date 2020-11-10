@@ -28,6 +28,7 @@ export class AppComponent implements OnInit, OnDestroy {
       y: [0.5]
     })
   });
+  bgImageUrl: any = 'https://fiverr-res.cloudinary.com/images/q_auto,f_auto/gigs/68801361/original/a225c7bdb8b901bbfe07bd81f020e89a9d4f4ce7/draw-2d-floor-plans-in-autocad-from-sketches-image-or-pdf.jpg';
   constructor(private fb: FormBuilder) { }
 
   ngOnInit() {
@@ -81,5 +82,17 @@ export class AppComponent implements OnInit, OnDestroy {
     this.selectedTableIndex = null;
     this.tableForm.reset();
     this.tableForm.get('position').setValue({ x: 0.5, y: 0.5 });
+  }
+  onSelectFile(event) {
+    if (event.target.files && event.target.files.length) {
+      for (const file of event.target.files) {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = (_event) => {
+          const imageUrl = reader.result;
+          this.bgImageUrl = reader.result;
+        };
+      }
+    }
   }
 }
