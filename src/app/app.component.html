@@ -1,11 +1,114 @@
 <div class="container clearfix">
-
+  <div class="border-bottom pb-3 d-flex align-items-center justify-content-end mt-3">
+    <ng-container *ngFor="let floorplan of floorplans; let i=index">
+      <button type="button" (click)="selectedFloorplan = floorplan"
+        class="btn btn-outline-primary mr-3">{{floorplan.name}}</button>
+    </ng-container>
+    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#floorplanModal"
+      data-whatever="@floorplanModal">
+      Add Floorplan</button>
+  </div>
+  <div class="d-flex align-items-center justify-content-end my-3">
+    <button type="button" class="btn btn-outline-primary mr-3" data-toggle="modal" data-target="#sectionModal"
+      data-whatever="@sectionModal">
+      Add Section</button>
+    <button type="button" class="btn btn-outline-primary" data-toggle="modal" data-target="#addTableModal"
+      data-whatever="@addTable">
+      Add Table</button>
+  </div>
+  <div class="row">
+    <div class="col-4">
+      <div class="list-group" *ngIf="selectedFloorplan">
+        <a data-toggle="modal" data-target="#addTableModal" data-whatever="@addTable" (click)="setTable(table, i)"
+          *ngFor="let table of selectedFloorplan.tables; let i=index"
+          class="list-group-item list-group-item-action">Table -
+          {{table.name}}</a>
+      </div>
+    </div>
+    <div class="col d-flex justify-content-end">
+      <div *ngIf="selectedFloorplan" style="width: 600px; height: 1000px;"
+        [ngStyle]="{'background': 'url(' + selectedFloorplan.image + ') no-repeat 0 0/ 100% 100%'}">
+        <div class="drag-boundary">
+          <div class="drag-box" *ngFor="let table of selectedFloorplan.tables; let i=index"
+            [ngClass]="{'circle-table': table.shape === 'circle', 'rect-table': table.shape === 'rectangle'}" cdkDrag
+            cdkDragBoundary=".drag-boundary" [cdkDragFreeDragPosition]="table.position"
+            (cdkDragEnded)="onDragEnded($event, table)">
+            {{table.name}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!--floorplan modal -->
+  <div class="modal fade" id="floorplanModal" tabindex="-1" role="dialog" aria-labelledby="floorplanModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="newFloorplanLabel">Add New Floorplan</h3>
+          <button (click)="floorplanForm.reset()" type="button" #closebuttonOfFloorplanModal class="close"
+            data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="floorplanForm">
+            <div class="form-group">
+              <label for="floorplan-name" class="col-form-label">Name:</label>
+              <input formControlName="name" type="text" class="form-control" id="floorplan-name">
+            </div>
+            <div class="form-group custom-file">
+              <input type="file" class="custom-file-input" accept='image/*' (change)="onSelectFile($event)" id="
+              inputGroupFile">
+              <label class="custom-file-label" for="customFile">Choose file</label>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" (click)="createFloorplan()" class="btn btn-primary btn-block">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end floorplan modal -->
+  <!-- section modal -->
+  <div class="modal fade" id="sectionModal" tabindex="-1" role="dialog" aria-labelledby="sectionModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="sectionModalLabel">Add New Section</h3>
+          <button (click)="sectionForm.reset()" type="button" #closebuttonOfSectionModal class="close"
+            data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="sectionForm">
+            <div class="form-group">
+              <label for="section-name" class="col-form-label">Name:</label>
+              <input formControlName="name" type="text" class="form-control" id="section-name">
+            </div>
+            <div class="form-group">
+              <label for="section-value" class="col-form-label">Value:</label>
+              <input formControlName="value" type="text" class="form-control" id="section-value">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" (click)="createSection()" class="btn btn-primary btn-block">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- end section modal -->
+  <!-- table modal -->
   <div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="addTableModalLabel"
     aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h3 class="modal-title" id="exampleModalLabel">Add New Table</h3>
+          <h3 class="modal-title" id="tableModalLabel">Add New Table</h3>
           <button type="button" #closebuttonOfTableModal (click)="closeTable()" class="close" data-dismiss="modal"
             aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -39,36 +142,5 @@
       </div>
     </div>
   </div>
-  <div class="d-flex align-items-center justify-content-end">
-    <button type="button" class="btn btn-outline-primary my-5 text-right" data-toggle="modal"
-      data-target="#addTableModal" data-whatever="@addTable">
-      Add table</button>
-    <div class="custom-file ml-3" style="max-width: 350px;">
-      <input type="file" class="custom-file-input" accept='image/*' (change)="onSelectFile($event)" id="
-      inputGroupFile">
-      <label class="custom-file-label" for="customFile">Choose file</label>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col-3">
-      <div class="list-group">
-        <a data-toggle="modal" data-target="#addTableModal" data-whatever="@addTable" (click)="setTable(table, i)"
-          *ngFor="let table of tables; let i=index" class="list-group-item list-group-item-action">Table -
-          {{table.name}}</a>
-      </div>
-    </div>
-    <div class="col">
-      <div style="background-size: 100% 100%;"
-        [ngStyle]="{'background': 'url(' + bgImageUrl + ') no-repeat 0 0 / cover'}">
-        <div class="drag-boundary">
-          <div class="drag-box" *ngFor="let table of tables; let i=index"
-            [ngClass]="{'circle-table': table.shape === 'circle', 'rect-table': table.shape === 'rectangle'}" cdkDrag
-            cdkDragBoundary=".drag-boundary" [cdkDragFreeDragPosition]="table.position"
-            (cdkDragEnded)="onDragEnded($event, table)">
-            {{table.name}}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <!-- end table modal -->
 </div>
